@@ -40,7 +40,7 @@
 
 \d .ws
 
-NSX:`q`Q`h`o`ws / Namespace exclusion list
+NSX:`q`Q`h`j`o`ws / Namespace exclusion list
 
 fnshow:{[nm;s] shw[;s;::;fnf]each fns nm;}
 
