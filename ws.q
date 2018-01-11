@@ -1,6 +1,6 @@
 /
 	Workspace utilities for developers
-	Copyright (c) 2015-2017 First Derivatives
+	Copyright (c) 2015-2018 First Derivatives
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License as
@@ -85,7 +85,7 @@ sz:@[-22!;;{~}]
 ln:{$["locked"~j:last i:` vs last x;~;count[i]-" }"~j]}
 ty:@[(58#"l"),reverse[ty],"-",upper[ty:1_-1_.Q.t],(58#"L"),(20#"-"),"AY",13#":"]77+
 sm:{$[0b in x=first x;y;first x]}
-ts:{$[(0h<>t:type x)|0=c:count x;t,c;0h in first each i:ts each x;t,c;1=count distinct 1_'-1_'i;sm[first each i;0h],c,sm[last each i;-1];sm[first each i;0h],c]}
+ts:{$[(0h<>t:type x)|0=c:count x;t,c;0h in first each i:ts each x;t,c;1=count distinct 1_'-1_'i;sm[first each i;0h],c,(1_-1_first i),sm[last each i;-1];sm[first each i;0h],c]}
 ky:{$[99h=type x;{$[1=count x;first x;x]}key flip key x;::]}
 lst:{sfmt[WTH]x}
 tsz:{[s;x] if[0b~t:.Q.qp x:0!x;x:flip .Q.V x];$[t;psz[s;x]+sz x;$[1000>n:count x;1b;0h<(&/)type each value flip x];sz x;"j"$(n%i)*sz(0!x)neg[i:cs n]?n]}
@@ -180,15 +180,15 @@ Syntactic element searching:
 On the line below, the following syntactic matches are found:
 
 a+b;"a+b";a_b:1;1_b;-1_-1,b;abc-1;101b;4+1 2 3i-1;1i_b;`bid
-^															/ "a"
-  ^               ^       ^                          ^		/ "b"
-^															/ "a+b"
-              ^ ^               ^               ^			/ "1"
-                    ^  ^       ^               ^			/ "-1"
-                                         ^					/ "1 2 3i"
-    ^														/ "\"a+b\""
-                                                        ^	/ "bid"
-															/ "i" (no matches)
+^                                                           / "a"
+  ^               ^       ^                          ^      / "b"
+^                                                           / "a+b"
+              ^ ^               ^               ^           / "1"
+                    ^  ^       ^               ^            / "-1"
+                                         ^                  / "1 2 3i"
+    ^                                                       / "\"a+b\""
+                                                        ^   / "bid"
+                                                            / "i" (no matches)
 a+b;"a+b";a_b:1;1_b;-1_-1,b;abc-1;101b;4+1 2 3i-1;1i_b;`bid
 
 Globals:
