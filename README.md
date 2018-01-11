@@ -19,14 +19,14 @@ attribute overhead.
 
 The summarization routines are listed below.
 
-| Function | Description |
+| Name and Syntax | Description |
 | -------- | ----------- |
-| .ws.fns | Displays the names of functions contained in the specified namespaces, or in all namespaces if the argument is \` |
-| .ws.vars | Displays the names of variables (excluding tables) contained in the specified namespaces, or in all namespaces if the argument is \` |
-| .ws.tbls | Displays the names of tables contained in the specified namespaces, or in all namespaces if the argument is \` |
-.ws.fnsum | Summarizes functions in the argument, expanding namespaces as appropriate. If the argument is \`, all functions in all namespaces are included.  The function summary includes the function name, its parameter list, line count, and size |
-| .ws.varsum | Summarizes variables (excluding tables) in the argument, expanding namespaces as appropriate. If the argument is \`, all variables in all namespaces are included.  The variable summary includes the variable name, its type, rank, size, and shape.  Type is represented by the Q type character, with uppercase indicating a nonscalar value (e.g. a vector or higher-dimensional array); `l` and `L` indicate an enumerated value, `Y` a dictionary, and `-` a heterogeneous object.  Rank is the number of leading uniform axes (where a scalar is 0) |
-| .ws.tblsum | Summarizes tables in the argument, expanding namespaces as appropriate. If the argument is \`, all tables in all namespaces are included.  The table summary includes the table name, its type, keys, row count, column count, and size. Type is `M` for an in-memory table, `S` for a splayed table, or `P` for a partitioned table  |
+| .ws.fns[names] | Displays the names of functions contained in the specified namespaces, or in all namespaces if the argument is \` |
+| .ws.vars[names] | Displays the names of variables (excluding tables) contained in the specified namespaces, or in all namespaces if the argument is \` |
+| .ws.tbls[names] | Displays the names of tables contained in the specified namespaces, or in all namespaces if the argument is \` |
+.ws.fnsum[names] | Summarizes functions in the argument, expanding namespaces as appropriate. If the argument is \`, all functions in all namespaces are included.  The function summary includes the function name, its parameter list, line count, and size |
+| .ws.varsum[names] | Summarizes variables (excluding tables) in the argument, expanding namespaces as appropriate. If the argument is \`, all variables in all namespaces are included.  The variable summary includes the variable name, its type, rank, size, and shape.  Type is represented by the Q type character, with uppercase indicating a nonscalar value (e.g. a vector or higher-dimensional array); `l` and `L` indicate an enumerated value, `Y` a dictionary, and `-` a heterogeneous object.  Rank is the number of leading uniform axes (where a scalar is 0) |
+| .ws.tblsum[names] | Summarizes tables in the argument, expanding namespaces as appropriate. If the argument is \`, all tables in all namespaces are included.  The table summary includes the table name, its type, keys, row count, column count, and size. Type is `M` for an in-memory table, `S` for a splayed table, or `P` for a partitioned table  |
 
 `fnsum`, `varsum`, and `tblsum` return keyed tables as results so that one can, for example, compare two samples.
 
@@ -125,10 +125,10 @@ character of each match on the line.  Results are written to
 
 The searching routines are listed below.
 
-| Function | Description |
+| Name and Syntax | Description |
 | -------- | ----------- |
-| .ws.fnshow | Searches the specified functions or namespaces for one or more strings |
-| .ws.seshow | Searches the specified functions or namespaces for one or more strings, matching only syntactic elements |
+| .ws.fnshow[names;strs] | Searches the specified functions or namespaces for one or more strings |
+| .ws.seshow[names;strs] | Searches the specified functions or namespaces for one or more strings, matching only syntactic elements |
 
 ### Syntactic Element Searching
 
