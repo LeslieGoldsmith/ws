@@ -87,7 +87,6 @@ w                      | L    1    18   ,2
 q).ws.tblsum`.
 Table        | Type Keys         Rows      Cols Size
 -------------| --------------------------------------------
-attr         | M    `id`createTS 392443    7    16482726
 ADU          | S    ::           0         6    98
 Account      | S    ::           340166    12   31295436
 Channel      | S    ::           1010938   19   68744069
@@ -102,6 +101,7 @@ ToolParam    | M    ::           392443    2    74489224
 ToolType     | M    ::           26        7    3729
 TimeZone     | S    ::           589       2    11380
 User         | S    ::           38        11   2641
+attr         | M    `id`createTS 392443    7    16482726
 ```
 
 ## Searching Routines
