@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /
 	Workspace utilities for developers
 	Copyright (c) 2015-2018 Leslie Goldsmith
