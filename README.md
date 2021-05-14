@@ -104,6 +104,64 @@ User         | S    ::           38        11   2641
 attr         | M    `id`createTS 392443    7    16482726
 ```
 
+## Calling Trees
+
+Call tree routines provide a way to interrogate and graphically display the functions invoked
+(directly and/or indirectly) by a specified root function.
+
+| Name and Syntax | Description |
+| -------- | ----------- |
+| `.ws.calls[fn]` | Lists the names of functions invoked directly by the specified root function |
+| `.ws.rcalls[fn]` | Lists the names of functions invoked directly or indirectly by the specified root function |
+| `.ws.fntree[names]` | Displays the full calling tree of functions in the argument, expanding namespaces as appropriate |
+
+### Examples
+
+```
+q).ws.NSX:-1_.ws.NSX / For example purposes, allow workspace routines to operate on own namespace
+
+q)count 0N!.ws.calls`.ws.fntree
+`s#`.ws.gfns`.ws.rt`.ws.tr
+3
+
+q)count .ws.rcalls`.ws.fntree
+16
+```
+
+The `calls` and `rcalls` routines can be used in conjunction with the [Q code profiler](https://github.com/LeslieGoldsmith/qprof) to profile
+only a specific calling subtree. For example:
+
+```
+q)\l prof.q
+q).prof.prof .ws.rcalls`run
+```
+
+The example below shows the output of computing a call tree of the `fntree` function itself.
+
+```
+q).ws.fntree`.ws.fntree
+
+                           ┌─ .ws.getn ─── .ws.expns ─┌─ .ws.getn+
+              ┌─ .ws.gfns ─│                          └─ .ws.ns
+              │            │─ .ws.mt
+              │            └─ .ws.val
+              │─ .ws.rt
+              │                          ┌─ .ws.ct
+─ .ws.fntree ─│                          │                                         ┌─ .ws.cref  ─┌─ .ws.cref*
+              │                          │             ┌─ .ws.ctiref ─── .ws.lref ─│             └─ .ws.lref+
+              │                          │─ .ws.ctref ─│                           └─ .ws.lref*
+              │            ┌─ .ws.calls ─│             └─ .ws.qn
+              │            │             │
+              │            │             │             ┌─ .ws.cref  ─┌─ .ws.cref*
+              └─ .ws.tr   ─│             │─ .ws.lref  ─│             └─ .ws.lref+
+                           │             │             └─ .ws.lref*
+                           │             └─ .ws.qn
+                           │─ .ws.rt
+                           └─ .ws.tr*
+```
+
+In the output of `fntree`, `*` following a name indicates direct recursion, and `+` indicates indirect recursion.
+
 ## Searching Routines
 
 Searching routines provide a way to search functions within a workspace for one
@@ -196,4 +254,4 @@ q).ws.seshow[`.misc.mkwdist`.misc.sqz`.misc.zpad;("i";"b";"abs")]
 
 # Author
 
-Leslie Goldsmith, First Derivatives
+Leslie Goldsmith
