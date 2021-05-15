@@ -2,7 +2,7 @@
 
 Workspace utilities for developers
 
-Contains routines for summarizing and searching the contents of
+Contains routines for summarizing, searching, and performing static analysic on the contents of
 a workspace.
 
 # Usage
@@ -161,6 +161,176 @@ q).ws.fntree`.ws.fntree
 ```
 
 In the output of `fntree`, `*` following a name indicates direct recursion, and `+` indicates indirect recursion.
+
+## Cross-References
+
+`fnxref` performs an independent static analysis and cross-reference of one or more Q
+functions, as well as their embedded lambdas.  For each specified function, each object
+identifier within the function is classified according to its type, and this is followed
+by a suspicious reference indicator and details about each reference.  Reference
+information consists of the line number on which the reference occurred and the type of
+reference.
+
+The identifier types are as follows:
+
+| Identifier Type | Description |
+| :--------: | :----------- |
+| ` *` | Unclassified |
+| `PR` | Parameter |
+|	`LV` | Local variable |
+|	`GV` | Global variable |
+|	`FN` | Function |
+|	`RC` | Recursive function |
+|	`LM` | Lambda function |
+|	`KW` | Q keyword |
+
+If an identifier's usage involves multiple types (for example, as a result of conflicting
+usage in an embedded lambda), the identifier type is followed by `+`.
+
+Aside from the symbolic identifiers used in the function, `fnxref` includes `:` as a
+special identifier and cross-references it against return statements, if any.
+
+Identifiers are marked as suspicious through the presence of the `?` character after the
+object type.  This may or may not indicate a problem, but it frequently does.  Examples
+of conditions that earn the suspicious reference indicator include the following:
+
+- unreferenced or duplicate local
+- local/global assignment conflict
+- local assignment to a global
+- global assignment to a local
+- assignment to a keyword
+
+Each reference to each identifier is classified as one of the following:
+
+| Reference Type | Description |
+| :--------: | ----------- |
+| (blank)	| Unclassified |
+|	`:` | Assignment, e.g. `a:1` or `a::1` |
+|	`[` | Index reference, e.g. `a[2]` or function call |
+|	`[:` | Index assignment, e.g. `a[2]:x` or `a[2]::x` |
+|	`@[` | At amend, e.g. `@[a;0;:;10]` |
+|	`.[` | Dot amend, e.g. `.[a;(0;2 3);:;10]` |
+|	`⍫:` | Modified assignment, where `⍫` is one of `+` `-` `*` `%` `&` `\` `\|` `<` `>` `=` `^` `!` `~` `,` `#` `_` `$` `?` `@` `.` , e.g. `a+:x` or `a-::x` |
+
+For example, a reference consisting of just a line number indicates a value is being sampled; a reference followed by `:` indicates a value is being assigned.
+
+> **Note** Assignment vs. execution of lambdas or projections is not distinguished, and these
+are reported as assignments.
+
+### Example
+
+`.ed.qed` is a line editor implemented in Q. The full source is available at ???. We use `.ed.qed` as a sample function to illustrate how the cross-reference output relates to the source. We first define a simple function to prefix function lines with ordinal numbers, to make the relationship clearer.
+
+```
+q)dfn:{-1 (5$"[",'string[til count x],'"]"),'x:"\n"vs last value value x;}
+```
+
+```
+q)dfn`.ed.qed
+[0]  {
+[1]   if[0~v:ncsv x;:()];nm:first v;c:v 1; / Extract name (with possible namespace) and context
+[2]   i:0,1+where"\n"=fn0:nm,":",last v; / Find line breaks
+[3]   Lns::10000*til count Fn::i _fn0,"\n"; / Scaled line numbers and corresponding lines
+[4]   Cur::0|-2+count Lns; / Current line (= insert point), before closing }
+[5]   Mode::0b; / Set insert (vs. edit) mode
+[6]   Ln::-1; / User-specified line number, if any
+[7]   if[v 2;fn0:0]; / Kill inceptive defn if new
+[8]   d:system"c";system"c 1000 2000"; / Set display size
+[9]   p:system"P";system"P 10"; / Set formatting precision
+[10]
+[11]  dl(); / Display all lines
+[12]
+[13]  while[not$[[2 pr:fmtn seln[];"\\w"~s:read0 0];
+[14]            [s:"";count nm:def[n;ctx[c;nm;n:name Fn];(1+fn?":")_fn:-1_(,/)Fn]];[if[i:"\\q"~s;nm:""];i]]; / Attempt to define function
+[15]    r:$[0=count s:ltrim s;Cur; / No change if input empty
+[16]            [Ln::-1;"["=first s];lcmd s; / Look for edit command
+[17]            upd pr,s]; / Otherwise, update current line
+[18]    $[r=-1;-2 "Command error";Mode&::r=Cur::r&-1+count Lns]];
+[19]
+[20]  if[count nm;-1 nm,(" defined";" unchanged")fn0~fn];
+[21]
+[22]  system"c ",.Q.s1 d;system"P ",string p; / Restore settings
+[23]  }
+```
+
+```
+q).ws.fnxref`.ed.qed
+
+.ed.qed:
+.Q.s1              FN     22                                n                  LV     14   14:
+:                   *      1                                name               FN     14
+Cur                GV      4:  15   18:                     ncsv               FN      1
+Fn                 GV      3:  14   14                      nm                 LV      1:   2   14:  14   14:  20
+Ln                 GV      6:  16:                                                    20
+Lns                GV      3:   4   18                      not                KW     13
+Mode               GV      5:  18&:                         p                  LV      9:  22
+c                  LV      1:  14                           pr                 LV     13:  17
+count              KW      3    4   14   15   18   20       r                  LV     15:  18   18   18
+ctx                FN     14[                               read0              KW     13
+d                  LV      8:  22                           s                  LV     13:  14:  14   15:  15   16
+def                FN     14[                                                         16   17
+dl                 FN     11                                seln               FN     13[
+first              KW      1   16                           string             KW     22
+fmtn               FN     13                                system             KW      8    8    9    9   22   22
+fn                 LV     14   14:  20                      til                KW      3
+fn0                LV      2:   3    7:  20                 upd                FN     17
+i                  LV      2:   3   14:  14                 v                  LV      1:   1    1    2    7
+if                 KW      1[   7[  14[  20[                where              KW      2
+last               KW      2                                while              KW     13[
+lcmd               FN     16                                x                  PR      1
+ltrim              KW     15
+```
+
+## Code Tags
+
+Comments beginning with `/#` are annotations known as _code tags_.  These comments can be used
+to provide semantic hints to programs that recognize them, as well as to surface execution
+details that may not be self-evident from visual or static analysis.  The call tree and
+cross-reference utilities recognize code tags.
+
+The character immediately following `/#` identifies the type of code tag.  The following
+types of code tags are supported:
+
+| Code Tag | Description |
+| -------- | ----------- |
+| `/#+ namelist` | Treat names in `namelist` as if referenced on line |
+| `/#@ namelist` | Treat contents of names in `namelist` as if referenced on line |
+
+The names listed may or may not be qualified with a namespace.  For example:
+
+```
+value r; /#+ run .rep.run0
+```
+  
+If a name is not qualified by a namespace, the context of the referencing function is used.
+
+When referencing the contents of a name using `/#@`, each name must refer to a defined
+global variable.  For example:
+
+```
+r:cmd[x] . args; /#@ cmd
+```
+
+This generates references to the items within the global variable `cmd`, with the precise
+effect depending upon the type of the variable:
+
+- If the value is a symbol or a list of symbols, the symbols are referenced.
+- If the value is a dictionary, then for each entry:
+	- If the key is a symbol and the value is a lambda, the key symbol qualified by the
+	  dictionary name is referenced.
+	- If the value is a lambda, the lambda is referenced.
+	- If the value is a symbol or a list of symbols, the value symbols are referenced.
+
+An ordinary comment may appear to the right of a code tag directive, and multiple code tags
+can appear on the same line:
+
+```
+r:cmd[x] . args; /#@ cmd / Run command
+	
+r:(`$"chk",hl)p; /#+ chkhigh chklow / Perform appropriate limit check
+	
+REPTAB[c][c;x;y;.rep`stop`start b]; /#@ REPTAB /#+ .rep.start .rep.stop / Invoke report routine
+```
 
 ## Searching Routines
 
