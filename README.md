@@ -107,7 +107,8 @@ attr         | M    `id`createTS 392443    7    16482726
 ## Calling Trees
 
 Call tree routines provide a way to interrogate and graphically display the functions invoked
-(directly and/or indirectly) by a specified root function.
+(directly and/or indirectly) by a specified root function. [Code tags](#code-tags) can be used to
+provide additional hints regarding referenced objects.
 
 | Name and Syntax | Description |
 | -------- | ----------- |
@@ -165,8 +166,10 @@ In the output of `fntree`, `*` following a name indicates direct recursion, and 
 ## Cross-References
 
 `fnxref` performs an independent static analysis and cross-reference of one or more Q
-functions, as well as their embedded lambdas.  For each specified function, each object
-identifier within the function is classified according to its type, and this is followed
+functions, as well as their embedded lambdas.  [Code tags](#code-tags) can be used to
+provide additional hints regarding referenced objects.
+
+For each specified function, each object identifier within the function is classified according to its type, and this is followed
 by a suspicious reference indicator and details about each reference.  Reference
 information consists of the line number on which the reference occurred and the type of
 reference.
