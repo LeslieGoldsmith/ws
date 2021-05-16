@@ -2,7 +2,7 @@
 
 Workspace utilities for developers
 
-Contains routines for summarizing, searching, and performing static analysic on the contents of
+Contains routines for summarizing, searching, and performing static analysis on the contents of
 a workspace.
 
 # Usage
@@ -40,6 +40,8 @@ expand  expp    falseAt fmt     getNewRz        getRa   getRd   getRz
 getvg   minToSpan       mkvg    pen     ps      pub     recutByID
 ..
 ```
+
+The formatting width of the name lists produced by `fns`, `vars`, and `tbls` is controlled by the value of `.ws.WTH`, which can be reassigned to change.
 
 ```
 q).ws.fnsum`.
@@ -222,7 +224,9 @@ are reported as assignments.
 
 ### Example
 
-`.ed.qed` is a line editor implemented in Q. The full source is available at ???. We use `.ed.qed` as a sample function to illustrate how the cross-reference output relates to the source. We first define a simple function to prefix function lines with ordinal numbers, to make the relationship clearer.
+`.ed.qed` is a line editor implemented in Q. The full source is available at [ed](https://github.com/LeslieGoldsmith/ed). We use `.ed.qed` as a sample
+function to illustrate how the cross-reference output relates to the source. We first define a simple function to prefix function lines with ordinal numbers,
+to make the cross-reference relationship clearer.
 
 ```
 q)dfn:{-1 (5$"[",'string[til count x],'"]"),'x:"\n"vs last value value x;}
@@ -283,6 +287,9 @@ last               KW      2                                while              K
 lcmd               FN     16                                x                  PR      1
 ltrim              KW     15
 ```
+
+A 1-up or 2-up output format is chosen automatically based on the composition of the output (name and line number lengths), and the value of the
+configuration parameter `.ws.WTH`. The default width is 120.
 
 ## Code Tags
 
