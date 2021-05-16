@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /
 	Workspace utilities for developers
 	Copyright (c) 2015-2018 Leslie Goldsmith
@@ -18,8 +17,8 @@
 
 	----------------
 
-	Contains routines for summarizing, searching, or analyzing the
-	contents of a workspace.
+	Contains routines for summarizing, searching, and performing
+	static analysis on the contents of a workspace.
 
 	Summarization routines list the names of objects of particular
 	classes (functions, variables, or tables), or provide a type-
@@ -475,4 +474,4 @@ a+b;"a+b";a_b:1;1_b;-1_-1,b;abc-1;101b;4+1 2 3i-1;1i_b;`bid
 Globals:
 
 .ws.NSX - List of namespaces to exclude; assign to change
-.ws.WTH - Formatting width for name lists; assign to change
+.ws.WTH - Formatting width for name lists and cross-references; assign to change
